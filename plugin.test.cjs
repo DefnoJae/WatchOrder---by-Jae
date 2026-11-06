@@ -18,17 +18,18 @@ function setup({ failDubs = false, deferGraph } = {}) {
         2: { ...second, relations: { edges: [{ relationType: "PREQUEL", node: first }] } }
     };
     const state = { visible: false };
-    const tray = { close() {}, update() {}, onOpen() {}, render(fn) { state.render = fn; }, stack: value => value, text: value => value, button: value => value };
+    const button = { mount() { state.mounted = true; }, onClick(fn) { events.open = fn; } };
     const viewer = {
         setContent(fn) { state.content = fn; },
         show() { state.visible = true; },
         hide() { state.visible = false; },
         update() {},
+        isHidden() { return !state.visible; },
         channel: { on(name, callback) { channels[name] = callback; } }
     };
     const ctx = {
-        newTray: () => tray,
-        newWebview: () => viewer,
+        action: { newAnimePageButton(options) { state.button = options; return button; } },
+        newWebview(options) { state.slot = options.slot; return viewer; },
         state(initial) { return { get: () => initial, set: value => { initial = value; } }; },
         effect() {},
         registerEventHandler(name, fn) { events[name] = fn; },
@@ -65,9 +66,11 @@ function setup({ failDubs = false, deferGraph } = {}) {
 
 test("opens an anime graph, enriches cards, reuses cache and navigates", async () => {
     const { state, events, channels, requests, navigate } = setup();
-    assert.match(state.render().join(" "), /details page first/);
+    assert.equal(state.mounted, true);
+    assert.equal(state.button.tooltipText, "Watch Order");
+    assert.equal(state.slot, "before-anime-entry-episode-list");
     navigate("/entry", "1");
-    await events["open-watch-order"]();
+    await events.open();
     assert.equal(state.visible, true);
     assert.deepEqual(requests, [[1], [2]]);
     const html = state.content();
@@ -83,14 +86,16 @@ test("opens an anime graph, enriches cards, reuses cache and navigates", async (
     channels["open-anime"](2);
     assert.equal(state.visible, false);
     assert.equal(state.destination, "/entry?id=2");
-    await events["open-watch-order"]();
+    await events.open();
     assert.equal(requests.length, 2);
+    await events.open();
+    assert.equal(state.visible, false);
 });
 
 test("keeps the graph when dub lookup fails", async () => {
     const { state, events, navigate } = setup({ failDubs: true });
     navigate("/entry", "1");
-    await events["open-watch-order"]();
+    await events.open();
     assert.match(state.content(), /dub availability could not load/);
     assert.match(state.content(), /data-id="2"/);
 });
@@ -100,7 +105,7 @@ test("ignores a response after leaving the title page", async () => {
     const deferGraph = new Promise(resolve => { release = resolve; });
     const { state, events, requests, navigate } = setup({ deferGraph });
     navigate("/entry", "1");
-    const opening = events["open-watch-order"]();
+    const opening = events.open();
     navigate("/discover");
     release();
     await opening;
