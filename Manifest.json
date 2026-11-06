@@ -1,1 +1,28 @@
-
+{
+  "id": "watch-order-by-jae",
+  "name": "Watch Order by Jae",
+  "version": "1.0.0",
+  "semverConstraint": ">=3.10.2",
+  "manifestURI": "https://raw.githubusercontent.com/DefnoJae/WatchOrder---by-Jae/main/Manifest.json",
+  "payloadURI": "https://raw.githubusercontent.com/DefnoJae/WatchOrder---by-Jae/main/plugin.js",
+  "website": "https://github.com/DefnoJae/WatchOrder---by-Jae",
+  "readme": "https://raw.githubusercontent.com/DefnoJae/WatchOrder---by-Jae/main/README.md",
+  "icon": "https://raw.githubusercontent.com/DefnoJae/WatchOrder---by-Jae/main/icon.svg",
+  "language": "javascript",
+  "type": "plugin",
+  "description": "Explore AniList franchise relationships, English dub availability and your watch progress.",
+  "author": "DefnoJae",
+  "lang": "en",
+  "plugin": {
+    "version": "1",
+    "permissions": {
+      "scopes": ["anilist"],
+      "allow": {
+        "networkAccess": {
+          "allowedDomains": ["graphql.anilist.co", "raw.githubusercontent.com"],
+          "reasoning": "Loads public AniList franchise relationships and the MyDubList English dub index."
+        }
+      }
+    }
+  }
+}
