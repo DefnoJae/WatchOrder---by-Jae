@@ -1,7 +1,7 @@
 {
   "id": "watch-order-by-jae",
   "name": "Watch Order by Jae",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "semverConstraint": ">=3.10.2",
   "manifestURI": "https://raw.githubusercontent.com/DefnoJae/WatchOrder---by-Jae/main/Manifest.json",
   "payloadURI": "https://raw.githubusercontent.com/DefnoJae/WatchOrder---by-Jae/main/plugin.js",

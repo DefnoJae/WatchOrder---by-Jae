@@ -48,13 +48,17 @@ function setup({ failDubs = false, deferGraph } = {}) {
             return { json: () => ({ data: { Page: { media: ids.map(id => anime[id]).filter(Boolean) } } }) };
         }
     };
+    let callback;
     vm.runInNewContext(code + "\ninit();", {
-        $ui: { register: fn => fn(ctx) },
+        $ui: { register: fn => { callback = fn.toString(); } }
+    });
+    const handler = vm.runInNewContext("(" + callback + ")", {
         $anilist: { getAnimeCollection: () => ({ MediaListCollection: { lists: [{ entries: [
             { media: { id: 1 }, progress: 6, score: 8 },
             { mediaId: 2, status: "COMPLETED" }
         ] }] } }) }
     });
+    handler(ctx);
     const navigate = (pathname, id) => state.navigate({ pathname, searchParams: { id } });
     return { state, events, channels, requests, navigate };
 }
