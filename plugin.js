@@ -216,7 +216,7 @@ function init() {
         function documentFor(title, status, markup = "") {
             return `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
         <title>Watch Order by Jae</title><style>
-        *{box-sizing:border-box}body{margin:0;background:transparent;color:#f3efff;font:15px system-ui,sans-serif;height:100vh;height:100dvh;display:flex;flex-direction:column}
+        *{box-sizing:border-box}html{color-scheme:dark;background:#0c0b0e}body{margin:0;background:#0c0b0e;color:#f3efff;font:15px system-ui,sans-serif;height:100vh;height:100dvh;display:flex;flex-direction:column}
         header{padding:8px 2px 12px;background:transparent;display:flex;gap:14px;align-items:center;flex-wrap:wrap}header div:first-child{flex:1}h1,p{margin:0}h1{font-size:19px}p{color:#c9bfe1;margin-top:4px}button{font:inherit;color:inherit;background:#2b2440;border:1px solid #5e507d;border-radius:8px;padding:7px 11px;cursor:pointer}button:hover,button:focus-visible{border-color:#d4bdff;outline:2px solid #a88ee2}#viewport{flex:1;overflow:auto;cursor:grab;touch-action:none;user-select:none;background:#141316;border:1px solid #28252e;border-radius:14px;display:grid;align-items:safe center}#viewport:active{cursor:grabbing}#size{position:relative;overflow:hidden;margin-inline:auto}#board{position:absolute;transform-origin:0 0}svg{position:absolute;inset:0;pointer-events:none}svg path{fill:none;stroke:#ab91e3;stroke-width:2;stroke-dasharray:5 4}marker path{fill:#ab91e3;stroke:none}svg text{fill:#e9dfff;font-size:13px;text-anchor:middle;paint-order:stroke;stroke:#100e1a;stroke-width:5px;stroke-linejoin:round}.card{position:absolute;width:250px;height:112px;display:flex;gap:9px;align-items:center;padding:7px;text-align:left}.card.current{border:2px solid #c2a1ff;background:#332651}.card img,.placeholder{width:62px;height:94px;object-fit:cover;border-radius:5px;background:#45365f;flex:none}.copy{display:grid;gap:3px;min-width:0}.copy strong{font-size:14px;line-height:1.15;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}small{color:#d0c3e6}.badges{display:flex;gap:3px;flex-wrap:wrap}.badge{background:#4a3869;border-radius:4px;font-size:10px;padding:2px 4px}.status{padding:8px 18px;background:#27203a;color:#ede2ff}
         </style><header><div><h1>Watch Order</h1><p>${escapeHtml(title)}</p></div><div>${markup ? '<button id="minus" aria-label="Zoom out">−</button> <button id="plus" aria-label="Zoom in">+</button> <button id="fit">Fit</button> ' : ""}<button id="close" aria-label="Close watch order">×</button></div></header>
         ${status ? `<div class="status" role="status">${escapeHtml(status)}</div>` : ""}
@@ -240,7 +240,7 @@ function init() {
         const viewer = ctx.newWebview({
             slot: "before-anime-entry-episode-list",
             hidden: true, width: "100%", height: "490px", maxHeight: "70vh",
-            style: "border:0;background:transparent"
+            style: "border:0;background:#0c0b0e"
         });
         const current = ctx.state(0);
         const cache = new Map();
