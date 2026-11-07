@@ -9,7 +9,7 @@ function setup({ failDubs = false, deferGraph } = {}) {
     const channels = {};
     const requests = [];
     const first = { id: 1, type: "ANIME", title: { english: "First </script>" }, episodes: 12, seasonYear: 2000 };
-    const second = { id: 2, type: "ANIME", title: { english: "Second" }, seasonYear: 2001 };
+    const second = { id: 2, type: "ANIME", title: { english: "Second" }, seasonYear: 2001, episodes: 13 };
     const anime = {
         1: { ...first, relations: { edges: [
             { relationType: "SEQUEL", node: second },
@@ -55,7 +55,7 @@ function setup({ failDubs = false, deferGraph } = {}) {
     });
     const handler = vm.runInNewContext("(" + callback + ")", {
         $anilist: { getAnimeCollection: () => ({ MediaListCollection: { lists: [{ entries: [
-            { media: { id: 1 }, progress: 6, score: 8 },
+            { media: { id: 1 }, progress: 6, score: 80 },
             { mediaId: 2, status: "COMPLETED" }
         ] }] } }) }
     });
@@ -75,10 +75,11 @@ test("opens an anime graph, enriches cards, reuses cache and navigates", async (
     assert.deepEqual(requests, [[1], [2]]);
     const html = state.content();
     assert.match(html, /First &lt;\/script&gt;/);
-    assert.match(html, /6\/12 watched/);
-    assert.match(html, /★ 8/);
-    assert.match(html, /✓ Watched/);
-    assert.match(html, /Partial EN Dub/);
+    assert.match(html, /Watched 6\/12/);
+    assert.match(html, /Personal score 8 out of 10/);
+    assert.match(html, /Completed 13\/13/);
+    assert.match(html, /PARTIAL DUB/);
+    assert.match(html, />DUB<\/span>/);
     assert.equal((html.match(/marker-end=/g) || []).length, 1);
     new vm.Script(html.match(/<script>([\s\S]*?)<\/script>/)[1]);
     channels["open-anime"](3);

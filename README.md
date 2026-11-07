@@ -6,7 +6,7 @@ Install the [raw manifest](https://raw.githubusercontent.com/DefnoJae/WatchOrder
 
 Open an anime's details page, then click the numbered-list **Watch Order** button in its toolbar. The graph opens inline above the episode list. Drag to pan, use **−**, **+**, or **Fit** to change the view, or hold Ctrl or Cmd while scrolling to zoom at the pointer. Select any poster card to open that title's details. Close the graph with **×**, Escape, or the toolbar button.
 
-The highlighted card is the current title. Arrows show AniList's reported relationships, and cards are arranged left to right by release chronology along connected branches. English dub badges use [MyDubList](https://github.com/Joelis57/MyDubList) and distinguish full from partial dubs. Progress and scores come from the app's AniList collection in its existing score format. Selecting a card opens the app's own page, where you can update your list.
+The highlighted card is the current title. Arrows show AniList's reported relationships, and cards are arranged left to right by release chronology along connected branches. English dub badges use [MyDubList](https://github.com/Joelis57/MyDubList) and distinguish full from partial dubs. Progress and scores come from the app's AniList collection with personal scores shown out of 10. Selecting a card opens the app's own page, where you can update your list.
 
 Traversal is limited to 40 titles and eight batched requests per opening. Larger or partially loaded franchises show a notice. If either the dub index or the collection is unavailable, the relationship graph still opens.
 
