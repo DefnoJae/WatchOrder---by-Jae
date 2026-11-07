@@ -172,7 +172,7 @@ function init() {
             let drag;
             let moved = false;
             function zoom(next, x = viewport.clientWidth / 2, y = viewport.clientHeight / 2) {
-                next = Math.min(2, Math.max(0.2, next));
+                next = Math.min(2, Math.max(0.02, next));
                 const left = (viewport.scrollLeft + x) / scale;
                 const top = (viewport.scrollTop + y) / scale;
                 scale = next;
@@ -219,7 +219,17 @@ function init() {
                 const card = event.target.closest("[data-id]");
                 if (card && (!moved || event.detail === 0)) send("open-anime", Number(card.dataset.id));
             });
-            fit();
+            const currentCard = board.querySelector(".card.current");
+            if (currentCard) {
+                const fitScale = Math.min(viewport.clientWidth / board.offsetWidth, viewport.clientHeight / board.offsetHeight);
+                zoom(Math.min(1.08, Math.max(0.85, fitScale * 1.08)));
+                const cardBounds = currentCard.getBoundingClientRect();
+                const viewBounds = viewport.getBoundingClientRect();
+                viewport.scrollLeft += cardBounds.left + cardBounds.width / 2 - viewBounds.left - viewport.clientWidth / 2;
+                viewport.scrollTop += cardBounds.top + cardBounds.height / 2 - viewBounds.top - viewport.clientHeight / 2;
+            } else {
+                fit();
+            }
         }
 
         function documentFor(title, status, markup = "") {
@@ -254,6 +264,7 @@ function init() {
         const current = ctx.state(0);
         const cache = new Map();
         let generation = 0;
+        let isOpen = false;
         let allowed = new Set();
         let html = documentFor("", "Open an anime page to view its watch order.");
         let dubCache;
@@ -263,10 +274,14 @@ function init() {
             viewer.show();
             viewer.update();
         }
-        function close() {
+        function hideGraph() {
             generation++;
             allowed = new Set();
             viewer.hide();
+        }
+        function close() {
+            isOpen = false;
+            hideGraph();
         }
         async function getDubs() {
             if (dubCache && Date.now() - dubCache.time < 3600000) return dubCache.data;
@@ -288,22 +303,20 @@ function init() {
             if (result.errors?.length || !result.data?.Page) throw new Error("AniList request failed");
             return result.data.Page.media;
         }
-        button.onClick(async () => {
-            const root = current.get();
-            if (!root) return;
-            if (!viewer.isHidden()) return close();
+        async function loadGraph(root) {
             const request = ++generation;
             const isCurrent = () => request === generation;
             allowed = new Set();
 
-            show(documentFor("", "Loading AniList relationships…"));
             try {
-                const saved = cache.get(root);
-                const graphRequest = saved && Date.now() - saved.time < 1800000
+                const saved = Array.from(cache.values()).find(entry =>
+                    Date.now() - entry.time < 1800000 && entry.graph.nodes.some(node => node.id === root));
+                if (!saved) show(documentFor("", "Loading AniList relationships…"));
+                const graphRequest = saved
                     ? Promise.resolve(saved.graph) : fetchGraph(root, query, isCurrent);
                 const [graph, dubs] = await Promise.all([graphRequest, getDubs().catch(() => null)]);
                 if (!isCurrent()) return;
-                if (!graph.warning) {
+                if (!saved && !graph.warning) {
                     cache.delete(root);
                     if (cache.size >= 12) cache.delete(cache.keys().next().value);
                     cache.set(root, { time: Date.now(), graph });
@@ -322,18 +335,26 @@ function init() {
             } catch (_) {
                 if (isCurrent()) show(documentFor("", "Unable to load this franchise from AniList. Close and reopen Watch Order to retry."));
             }
+        }
+        button.onClick(() => {
+            if (isOpen) return close();
+            const root = current.get();
+            if (!root) return;
+            isOpen = true;
+            return loadGraph(root);
         });
         viewer.channel.on("close", close);
         viewer.channel.on("open-anime", id => {
-            if (!allowed.has(id)) return;
-            close();
+            if (!allowed.has(id) || id === current.get()) return;
             ctx.screen.navigateTo("/entry", { id: String(id) });
         });
         ctx.screen.onNavigate(({ pathname, searchParams }) => {
             const id = Number(searchParams?.id);
             const next = pathname === "/entry" && Number.isSafeInteger(id) && id > 0 ? id : 0;
-            if (next !== current.get()) close();
+            if (next === current.get()) return;
             current.set(next);
+            if (!next) return hideGraph();
+            if (isOpen) return loadGraph(next);
         });
         ctx.screen.loadCurrent();
     });

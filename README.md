@@ -4,7 +4,7 @@ Watch Order brings the franchise graph from [ApexAnimehub](https://github.com/De
 
 Install the [raw manifest](https://raw.githubusercontent.com/DefnoJae/WatchOrder---by-Jae/main/Manifest.json) from the app's Extensions page. Grant AniList access to display the progress and personal scores in your connected collection, and allow network access to AniList and GitHub for relationship and dub data.
 
-Open an anime's details page, then click the numbered-list **Watch Order** button in its toolbar. The graph opens inline above the episode list. Drag to pan, use **−**, **+**, or **Fit** to change the view, or hold Ctrl or Cmd while scrolling to zoom at the pointer. Select any poster card to open that title's details. Close the graph with **×**, Escape, or the toolbar button.
+Open an anime's details page, then click the numbered-list **Watch Order** button in its toolbar. The graph opens inline above the episode list. Drag to pan, use **−**, **+**, or **Fit** to change the view, or hold Ctrl or Cmd while scrolling to zoom at the pointer. The graph opens focused on the current title. Select any poster card to open that title's details and keep Watch Order open. Close the graph with **×**, Escape, or the toolbar button.
 
 The highlighted card is the current title. Arrows show AniList's reported relationships, and cards are arranged left to right by release chronology along connected branches. English dub badges use [MyDubList](https://github.com/Joelis57/MyDubList) and distinguish full from partial dubs. Progress and scores come from the app's AniList collection with personal scores shown out of 10. Selecting a card opens the app's own page, where you can update your list.
 

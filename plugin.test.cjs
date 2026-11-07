@@ -84,12 +84,22 @@ test("opens an anime graph, enriches cards, reuses cache and navigates", async (
     new vm.Script(html.match(/<script>([\s\S]*?)<\/script>/)[1]);
     channels["open-anime"](3);
     assert.equal(state.visible, true);
+    channels["open-anime"](1);
+    assert.equal(state.destination, undefined);
     channels["open-anime"](2);
-    assert.equal(state.visible, false);
+    assert.equal(state.visible, true);
     assert.equal(state.destination, "/entry?id=2");
-    await events.open();
+    await navigate("/entry", "2");
+    assert.equal(state.visible, true);
+    assert.match(state.content(), /class="card current" data-id="2"/);
     assert.equal(requests.length, 2);
+    await navigate("/discover");
+    assert.equal(state.visible, false);
+    await navigate("/entry", "2");
+    assert.equal(state.visible, true);
     await events.open();
+    assert.equal(state.visible, false);
+    await navigate("/entry", "1");
     assert.equal(state.visible, false);
 });
 
