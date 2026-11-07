@@ -8,8 +8,8 @@ function setup({ failDubs = false, deferGraph } = {}) {
     const events = {};
     const channels = {};
     const requests = [];
-    const first = { id: 1, type: "ANIME", title: { english: "First </script>" }, episodes: 12, seasonYear: 2000 };
-    const second = { id: 2, type: "ANIME", title: { english: "Second" }, seasonYear: 2001, episodes: 13 };
+    const first = { id: 1, idMal: 28121, type: "ANIME", title: { english: "First </script>" }, episodes: 12, seasonYear: 2000 };
+    const second = { id: 2, idMal: 37347, type: "ANIME", title: { english: "Second" }, seasonYear: 2001, episodes: 13 };
     const anime = {
         1: { ...first, relations: { edges: [
             { relationType: "SEQUEL", node: second },
@@ -41,7 +41,7 @@ function setup({ failDubs = false, deferGraph } = {}) {
         async fetch(url, options) {
             if (url.includes("githubusercontent")) {
                 if (failDubs) throw new Error("offline");
-                return { json: () => ({ dubbed: [1], partial: [2] }) };
+                return { json: () => ({ dubbed: [28121], partial: [37347] }) };
             }
             const ids = JSON.parse(options.body).variables.ids;
             requests.push(ids);

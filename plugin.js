@@ -1,7 +1,7 @@
 function init() {
     $ui.register(ctx => {
         const RELATIONS = new Set(["PREQUEL", "SEQUEL", "PARENT", "SIDE_STORY", "SPIN_OFF", "ALTERNATIVE", "SUMMARY"]);
-        const FIELDS = "id type title { english romaji } coverImage { extraLarge } format episodes seasonYear startDate { year month day }";
+        const FIELDS = "id idMal type title { english romaji } coverImage { extraLarge } format episodes seasonYear startDate { year month day }";
         const QUERY = `query WatchOrder($ids: [Int]) {
           Page(perPage: 12) { media(id_in: $ids, type: ANIME) {
             ${FIELDS} relations { edges { relationType node { ${FIELDS} } } }
@@ -148,7 +148,8 @@ function init() {
                     : count !== "" ? "Watched " + count : "";
                 // Seanime's AnimeCollection query requests AniList scores in POINT_100 format.
                 const score = entry?.score > 0 ? `<span class="score" aria-label="Personal score ${entry.score / 10} out of 10">☆ ${entry.score / 10}</span>` : "";
-                const dub = dubs.dubbed.has(node.id) ? "DUB" : dubs.partial.has(node.id) ? "PARTIAL DUB" : "";
+                // MyDubList indexes English dubs by MyAnimeList ID.
+                const dub = dubs.dubbed.has(node.idMal) ? "DUB" : dubs.partial.has(node.idMal) ? "PARTIAL DUB" : "";
                 const dubBadge = dub ? `<span class="dub"><svg width="12" height="12" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 6v4m3-6v8m3-10v12m3-10v8m3-6v4"/></svg>${dub}</span>` : "";
                 const detail = [node.startDate?.year || node.seasonYear, node.format?.replace("_", " "), total && `${total} ep`].filter(Boolean).join(" · ");
                 const currentBadge = isCurrent ? '<span class="current-label">Current title</span>' : "";
